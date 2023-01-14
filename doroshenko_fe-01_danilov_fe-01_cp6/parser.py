@@ -56,14 +56,10 @@ class Parser:
                     oldTokenType = "STR"
                 if newTokenType == "COMMA":
                     oldTokenType = "COMMA"
-
-        print(self.__tokens[1].value, colums, indexedFields)
         self.DB.CreateTable(self.__tokens[1].value, colums, indexedFields)
 
     def Insert(self, tokenLen):
         STRsToInsert = list()
-        if self.__tokens[1].type != "INTO":
-            raise Exception("Unknown table name")
         if self.__tokens[3].type != "LPAREN":
             raise Exception("( Expected")
         if self.__tokens[-2].type != 'RPAREN':
@@ -78,12 +74,8 @@ class Parser:
                 continue
             else:
                 raise Exception(") Expected")
-
-        print(self.__tokens[2].value, STRsToInsert)
-
         self.DB.Insert(self.__tokens[2].value, STRsToInsert)
 
-  
     def Select(self):
         column_where = None
         column_equals = None
@@ -94,7 +86,6 @@ class Parser:
             table_name = self.__tokens[2].value
             if self.__tokens[3].type == "SEMICOLON":
                 self.DB.Select(table_name, None, None)
-                print(table_name, column_where, column_equals)
 
             elif self.__tokens[3].type == 'WHERE' \
                     and self.__tokens[4].type == 'STR' and \
@@ -104,9 +95,7 @@ class Parser:
                     self.__tokens[8].type == 'QUOTE':
                 column_where = self.__tokens[4].value
                 column_equals = self.__tokens[7].value
-                print(table_name, column_where, str(column_equals))
                 self.DB.Select(table_name, column_where, column_equals)
-                
 
             elif self.__tokens[3].type == "FULL_JOIN" \
                     and self.__tokens[4].type == "STR" and \
@@ -114,12 +103,9 @@ class Parser:
                     self.__tokens[6].type == "STR" and \
                     self.__tokens[7].type == "EQUALS" and \
                     self.__tokens[8].type == "STR":
-                print(table_name, self.__tokens[4].value, self.__tokens[6].value,  self.__tokens[8].value)
-                #self.DB.SelectJoin(table_name1, table_name2, column_1, column_2)
-                pass
+                self.DB.Full_Join(table_name, self.__tokens[4].value, self.__tokens[6].value, self.__tokens[8].value)
             else:
                 raise Exception("Invalid syntax")
-
 
     def parse(self):
         tokenLen = len(self.__tokens)

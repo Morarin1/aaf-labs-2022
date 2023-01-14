@@ -3,6 +3,8 @@ from parser import Parser
 from DataBase.index import DataBase
 
 DB = DataBase()
+
+
 def run(text):
     lexer = Lexer(text)
     tokens, error = lexer.make_tokens()
